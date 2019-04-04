@@ -62,7 +62,7 @@ func IsAncestor(
 
 // ancestorsIndex returns a map with the ancestors of the starting commit if the
 // excluded one is not one of them. It returns errIsReachable if the excluded commit
-// is ancestor of the starting, or another error if the history is not transversable.
+// is ancestor of the starting, or another error if the history is not traversable.
 func ancestorsIndex(excluded, starting *object.Commit) (map[plumbing.Hash]struct{}, error) {
 	if excluded.Hash.String() == starting.Hash.String() {
 		return nil, errIsReachable
