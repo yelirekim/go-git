@@ -90,38 +90,37 @@ func ancestorsIndex(excluded, starting *object.Commit) (map[plumbing.Hash]struct
 // It mimics the behavior of `git merge-base --independent commit...`.
 func Independents(commits []*object.Commit) ([]*object.Commit, error) {
 	// use sortedByCommitDateDesc strategy
-	cleaned := sortByCommitDateDesc(commits...)
-	cleaned = removeDuplicated(cleaned)
-	return independents(cleaned, map[plumbing.Hash]bool{}, 0)
-}
+	candidates := sortByCommitDateDesc(commits...)
+	candidates = removeDuplicated(candidates)
 
-func independents(
-	candidates []*object.Commit,
-	excluded map[plumbing.Hash]bool,
-	start int,
-) ([]*object.Commit, error) {
-	if len(candidates) == 1 {
+	seen := map[plumbing.Hash]struct{}{}
+	var isLimit object.CommitFilter = func(commit *object.Commit) bool {
+		_, ok := seen[commit.Hash]
+		return ok
+	}
+
+	if len(candidates) < 2 {
 		return candidates, nil
 	}
 
-	res := candidates
-	for i := start; i < len(candidates); i++ {
-		from := candidates[i]
-		others := remove(res, from)
-		fromHistoryIter := object.NewCommitIterBSF(from, excluded, nil)
+	pos := 0
+	for {
+		from := candidates[pos]
+		others := remove(candidates, from)
+		fromHistoryIter := object.NewFilterCommitIter(from, nil, &isLimit)
 		err := fromHistoryIter.ForEach(func(fromAncestor *object.Commit) error {
 			for _, other := range others {
 				if fromAncestor.Hash == other.Hash {
-					res = remove(res, other)
+					candidates = remove(candidates, other)
 					others = remove(others, other)
 				}
 			}
 
-			if len(res) == 1 {
+			if len(candidates) == 1 {
 				return storer.ErrStop
 			}
 
-			excluded[fromAncestor.Hash] = true
+			seen[fromAncestor.Hash] = struct{}{}
 			return nil
 		})
 
@@ -129,13 +128,15 @@ func independents(
 			return nil, err
 		}
 
-		if len(res) < len(candidates) {
-			return independents(res, excluded, indexOf(res, from)+1)
+		nextPos := indexOf(candidates, from) + 1
+		if nextPos >= len(candidates) {
+			break
 		}
 
+		pos = nextPos
 	}
 
-	return res, nil
+	return candidates, nil
 }
 
 // sortByCommitDateDesc returns the passed commits, sorted by `committer.When desc`

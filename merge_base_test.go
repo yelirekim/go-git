@@ -39,7 +39,7 @@ func alphabeticSortCommits(commits []*object.Commit) {
 
 The following tests consider this history having two root commits: V and W
 
-V---o---M----AB----A---CD1--R---C--------S-------------------Q < master
+V---o---M----AB----A---CD1--P---C--------S-------------------Q < master
                \         \ /            /                   /
                 \         X            GQ1---G < feature   /
                  \       / \          /     /             /
@@ -57,14 +57,16 @@ passed  merge-base
 
 Independents
 ----------------------------
-candidates        result
- A                 A           Only one commit returns it
- A, A, A           A           Repeated commits are ignored
- A, A, M, M, N     A, N        M is reachable from A, no it is not independent
- CD1, CD2, M, N    CD1, CD2    M and N are reachable from CD2, so they're not
- C, G, dev, M, N   C, G, dev   M and N are reachable from G, so they're not
- A, A^, A, N, N^   A, N        A^ and N^ are rechable from A and N
-
+candidates           result
+ A                    A           Only one commit returns it
+ A, A, A              A           Repeated commits are ignored
+ A, A, M, M, N        A, N        M is reachable from A, so it is not independent
+ S, G, P              S, G        P is reachable from S, so it is not independent
+ CD1, CD2, M, N       CD1, CD2    M and N are reachable from CD2, so they're not
+ C, G, dev, M, N      C, G, dev   M and N are reachable from G, so they're not
+ C, D, M, N           C, D        M and N are reachable from C, so they're not
+ A, A^, A, N, N^      A, N        A^ and N^ are rechable from A and N
+ A^^^, A^, A^^, A, N  A, N        A^^^, A^^ and A^ are rechable from A, so they're not
 
 IsAncestor
 ----------------------------
@@ -246,10 +248,18 @@ func (s *orphansSuite) TestIndependentAcrossCrossMerges(c *C) {
 	s.AssertIndependents(c, revs, expectedRevs)
 }
 
-// TestIndependentChangingOrder validates that Independents works well
+// TestIndependentChangingOrderRepetition validates that Independents works well
 // when the order and repetition is tricky (A, A^, A, N, N^ -> A, N)
-func (s *orphansSuite) TestIndependentChangingOrder(c *C) {
+func (s *orphansSuite) TestIndependentChangingOrderRepetition(c *C) {
 	revs := []string{"A", "A^", "A", "N", "N^"}
+	expectedRevs := []string{"A", "N"}
+	s.AssertIndependents(c, revs, expectedRevs)
+}
+
+// TestIndependentChangingOrder validates that Independents works well
+// when the order is tricky (A^^^, A^, A^^, A, N -> A, N)
+func (s *orphansSuite) TestIndependentChangingOrder(c *C) {
+	revs := []string{"A^^^", "A^", "A^^", "A", "N"}
 	expectedRevs := []string{"A", "N"}
 	s.AssertIndependents(c, revs, expectedRevs)
 }
