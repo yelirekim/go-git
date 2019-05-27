@@ -7,9 +7,9 @@ import (
 	"fmt"
 
 	"gopkg.in/src-d/go-billy.v4"
-	"gopkg.in/src-d/go-git.v4/config"
-	"gopkg.in/src-d/go-git.v4/plumbing"
-	"gopkg.in/src-d/go-git.v4/plumbing/format/index"
+	"github.com/yelirekim/go-git/config"
+	"github.com/yelirekim/go-git/plumbing"
+	"github.com/yelirekim/go-git/plumbing/format/index"
 )
 
 var (

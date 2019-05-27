@@ -5,8 +5,8 @@ import (
 	"hash"
 	"io"
 
-	"gopkg.in/src-d/go-git.v4/plumbing"
-	"gopkg.in/src-d/go-git.v4/utils/binary"
+	"github.com/yelirekim/go-git/plumbing"
+	"github.com/yelirekim/go-git/utils/binary"
 )
 
 // Encoder writes MemoryIndex structs to an output stream.

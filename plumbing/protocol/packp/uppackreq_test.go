@@ -3,8 +3,8 @@ package packp
 import (
 	"bytes"
 
-	"gopkg.in/src-d/go-git.v4/plumbing"
-	"gopkg.in/src-d/go-git.v4/plumbing/protocol/packp/capability"
+	"github.com/yelirekim/go-git/plumbing"
+	"github.com/yelirekim/go-git/plumbing/protocol/packp/capability"
 
 	. "gopkg.in/check.v1"
 )

@@ -9,16 +9,16 @@ import (
 	"path/filepath"
 
 	"gopkg.in/src-d/go-billy.v4/util"
-	"gopkg.in/src-d/go-git.v4/plumbing"
-	"gopkg.in/src-d/go-git.v4/plumbing/filemode"
-	"gopkg.in/src-d/go-git.v4/plumbing/format/gitignore"
-	"gopkg.in/src-d/go-git.v4/plumbing/format/index"
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
-	"gopkg.in/src-d/go-git.v4/utils/ioutil"
-	"gopkg.in/src-d/go-git.v4/utils/merkletrie"
-	"gopkg.in/src-d/go-git.v4/utils/merkletrie/filesystem"
-	mindex "gopkg.in/src-d/go-git.v4/utils/merkletrie/index"
-	"gopkg.in/src-d/go-git.v4/utils/merkletrie/noder"
+	"github.com/yelirekim/go-git/plumbing"
+	"github.com/yelirekim/go-git/plumbing/filemode"
+	"github.com/yelirekim/go-git/plumbing/format/gitignore"
+	"github.com/yelirekim/go-git/plumbing/format/index"
+	"github.com/yelirekim/go-git/plumbing/object"
+	"github.com/yelirekim/go-git/utils/ioutil"
+	"github.com/yelirekim/go-git/utils/merkletrie"
+	"github.com/yelirekim/go-git/utils/merkletrie/filesystem"
+	mindex "github.com/yelirekim/go-git/utils/merkletrie/index"
+	"github.com/yelirekim/go-git/utils/merkletrie/noder"
 )
 
 var (
